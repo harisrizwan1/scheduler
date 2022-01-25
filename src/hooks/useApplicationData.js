@@ -35,9 +35,16 @@ const useApplicationData = () => {
       [id]: appointment,
     };
 
-    return axios.put(`/api/appointments/${id}`, appointment).then((res) => {
+    console.log("days: ", state.days);
+
+    const newDay = state.days.filter((day) => day.name === state.day)[0];
+    newDay.spots -= 1;
+    const days = state.days.map((day) => (day.id === newDay.id ? newDay : day));
+
+    return axios.put(`/api/appointments/${id}`, appointment).then(() => {
       setState({
         ...state,
+        days,
         appointments,
       });
     });
@@ -54,9 +61,14 @@ const useApplicationData = () => {
       [id]: appointment,
     };
 
+    const newDay = state.days.filter((day) => day.name === state.day)[0];
+    newDay.spots += 1;
+    const days = state.days.map((day) => (day.id === newDay.id ? newDay : day));
+
     return axios.delete(`/api/appointments/${id}`, appointment).then(() => {
       setState({
         ...state,
+        days,
         appointments,
       });
     });
